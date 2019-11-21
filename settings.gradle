@@ -1,0 +1,5 @@
+rootProject.name = 'SnakeGame'
+
+include(':Rex')
+println new File("C:\\Dev\\IntelliJ\\Rex").getAbsolutePath()
+project(':Rex').projectDir = new File("C:\\Dev\\IntelliJ\\Rex")

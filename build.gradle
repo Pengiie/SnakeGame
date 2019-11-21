@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.1.0'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
+
+group 'penguinz22'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+project.ext.mainClassName = 'com.penguinz22.SnakeGame.App'
+project.ext.assetsDir = new File("assets")
+
+defaultTasks 'runSimple'
+
+task run(dependsOn: classes, type: JavaExec){
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    ignoreExitValue = true
+
+
+}
+
+task dist(type: Jar, dependsOn: classes){
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.assetsDir)
+
+    manifest{
+        attributes 'Main-Class': project.mainClassName
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile project(path: ':Rex', configuration: 'shadow')
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": mainClassName,
+        )
+    }
+}
+
+shadowJar {
+    baseName = project.name
+    classifier = null
+    version = project.version
+
+}
